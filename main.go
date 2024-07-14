@@ -9,14 +9,14 @@ import (
 
 // Game struct willl hold all the data the entire game will ned.
 type Game struct {
-	Tiles []MapTile
+	Map GameMap
 }
 
 //create a new game object and initialize the data
 
 func NewGame() *Game {
 	g := &Game{}
-	g.Tiles = CreateTiles()
+	g.Map = NewGameMap()
 	return g
 }
 
@@ -28,9 +28,10 @@ func (g *Game) Update() error {
 // draw similarly is called draw cycle and is where we will blit
 func (g *Game) Draw(screen *ebiten.Image) {
 	gd := NewGameData()
+	level := g.Map.Dungeons[0].Levels[0]
 	for x := 0; x < gd.ScreenWidth; x++ {
 		for y := 0; y < gd.ScreenHeight; y++ {
-			tile := g.Tiles[GetIndexFromXY(x, y)]
+			tile := level.Tiles[level.GetIndexFromXY(x, y)]
 			op := &ebiten.DrawImageOptions{}
 			op.GeoM.Translate(float64(tile.PixelX), float64(tile.PixelY))
 			screen.DrawImage(tile.Image, op)
@@ -41,7 +42,8 @@ func (g *Game) Draw(screen *ebiten.Image) {
 //layout will return the screen dimensions
 
 func (g *Game) Layout(w, h int) (int, int) {
-	return 1280, 800
+	gd := NewGameData()
+	return gd.TileWidth * gd.ScreenWidth, gd.TileHeight * gd.ScreenHeight
 }
 
 func main() {
@@ -52,5 +54,4 @@ func main() {
 	if err := ebiten.RunGame(g); err != nil {
 		log.Fatal(err)
 	}
-
 }
