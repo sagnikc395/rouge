@@ -1,18 +1,22 @@
 package main
 
 import (
-	"github.com/hajimehoshi/ebiten/v2"
 	_ "image/png"
 	"log"
+
+	"github.com/hajimehoshi/ebiten/v2"
 )
 
 // Game struct willl hold all the data the entire game will ned.
-type Game struct{}
+type Game struct {
+	Tiles []MapTile
+}
 
 //create a new game object and initialize the data
 
 func NewGame() *Game {
 	g := &Game{}
+	g.Tiles = CreateTiles()
 	return g
 }
 
@@ -23,7 +27,15 @@ func (g *Game) Update() error {
 
 // draw similarly is called draw cycle and is where we will blit
 func (g *Game) Draw(screen *ebiten.Image) {
-
+	gd := NewGameData()
+	for x := 0; x < gd.ScreenWidth; x++ {
+		for y := 0; y < gd.ScreenHeight; y++ {
+			tile := g.Tiles[GetIndexFromXY(x, y)]
+			op := &ebiten.DrawImageOptions{}
+			op.GeoM.Translate(float64(tile.PixelX), float64(tile.PixelY))
+			screen.DrawImage(tile.Image, op)
+		}
+	}
 }
 
 //layout will return the screen dimensions
