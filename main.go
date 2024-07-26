@@ -7,12 +7,17 @@ import (
 
 //game holds all the data the entire game will need
 
-type Game struct{}
+type Game struct {
+	//game contains a slice of tiles
+	Tiles []MapTile
+}
 
 //constructor for the new game
 
 func NewGame() *Game {
 	g := &Game{}
+	// when creating a new game, it would load the slice of tiles with our map
+	g.Tiles = CreateTiles()
 	return g
 }
 
@@ -23,7 +28,17 @@ func (g *Game) Update() error {
 
 // draw will be called on each draw cycle and is where we will blip
 func (g *Game) Draw(screen *ebiten.Image) {
+	//draw the map
 
+	gd := NewGameData()
+	for x := 0; x < gd.ScreenWidth; x++ {
+		for y := 0; y < gd.ScreenHeight; y++ {
+			tile := g.Tiles[GetIndexFromXY(x, y)]
+			op := &ebiten.DrawImageOptions{}
+			op.GeoM.Translate(float64(tile.PixelX), float64(tile.PixelY))
+			screen.DrawImage(tile.Image, op)
+		}
+	}
 }
 
 // layout will return the screen dimensions
