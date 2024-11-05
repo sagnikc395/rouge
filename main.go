@@ -1,56 +1,43 @@
 package main
 
 import (
-	"github.com/hajimehoshi/ebiten/v2"
 	"log"
+
+	"github.com/hajimehoshi/ebiten/v2"
 )
 
-//game holds all the data the entire game will need
+//game struct -> holds all the data we need globally for the game
+// and will also be the structure we will meet the interface
+// to bootstrap Ebiten.
 
-type Game struct {
-	//game contains a slice of tiles
-	Tiles []MapTile
-}
+type Game struct{}
 
-//constructor for the new game
-
+// constructor for the game Object and init the data
 func NewGame() *Game {
 	g := &Game{}
-	// when creating a new game, it would load the slice of tiles with our map
-	g.Tiles = CreateTiles()
 	return g
 }
 
-// update the game on each of the tic
+// callbacks for the Updating systems , drawing and layout
+// update will be called with each tic
 func (g *Game) Update() error {
 	return nil
 }
 
-// draw will be called on each draw cycle and is where we will blip
+// drawing is calling each draw cycle and is where we will blit.
 func (g *Game) Draw(screen *ebiten.Image) {
-	//draw the map
 
-	gd := NewGameData()
-	for x := 0; x < gd.ScreenWidth; x++ {
-		for y := 0; y < gd.ScreenHeight; y++ {
-			tile := g.Tiles[GetIndexFromXY(x, y)]
-			op := &ebiten.DrawImageOptions{}
-			op.GeoM.Translate(float64(tile.PixelX), float64(tile.PixelY))
-			screen.DrawImage(tile.Image, op)
-		}
-	}
 }
 
-// layout will return the screen dimensions
+// the layout will return the screen dimensions
 func (g *Game) Layout(w, h int) (int, int) {
 	return 1280, 800
 }
 
-// main render loop
 func main() {
 	g := NewGame()
-	ebiten.SetWindowResizable(true)
-	ebiten.SetWindowTitle("Tower Defense")
+	ebiten.SetWindowResizingMode(1)
+	ebiten.SetWindowTitle("Rouge")
 	if err := ebiten.RunGame(g); err != nil {
 		log.Fatal(err)
 	}

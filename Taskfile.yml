@@ -1,0 +1,22 @@
+version: '3'
+
+tasks:
+  build:
+    desc: Compiling Rouge
+    cmds:
+      - mkdir -p dist 
+      - go build -o dist/rouge main.go
+    sources:
+      - main.go 
+    generates:
+      - dist/rouge 
+
+  clean:
+    desc: Remove the build artifacts 
+    cmds:
+      - rm -rf dist/
+  
+  default:
+    desc: Default Task 
+    cmds:
+      - task: build 
